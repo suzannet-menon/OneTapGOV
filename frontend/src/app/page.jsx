@@ -7,7 +7,6 @@ import HowRecommendationsWork from "../components/sections/HowRecommendationsWor
 import Sectors from "../components/sections/Sectors";
 import EligibilityPreview from "../components/sections/EligibilityPreview";
 import WhyOneTapGOV from "../components/sections/WhyOneTapGOV";
-import TrustTransparency from "../components/sections/TrustTransparency";
 import FinalCTA from "../components/sections/FinalCTA";
 
 export const metadata = {
@@ -27,7 +26,6 @@ export default function HomePage() {
       <Sectors />
       <EligibilityPreview />
       <WhyOneTapGOV />
-      <TrustTransparency />
       <FinalCTA />
       <Footer />
     </main>
