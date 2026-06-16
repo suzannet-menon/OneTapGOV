@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 const LANGUAGES = [
   { value: "en", label: "English" },
@@ -14,6 +16,7 @@ const LANGUAGES = [
 ];
 
 export default function SignupPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     full_name: "",
     email: "",
@@ -42,22 +45,25 @@ export default function SignupPage() {
     }
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      const { data, error: authError } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+        options: {
+          data: {
+            full_name: form.full_name,
+            phone_number: form.phone_number,
+            preferred_language: form.preferred_language,
+          },
+        },
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Something went wrong. Please try again.");
+      if (authError) {
+        setError(authError.message || "Something went wrong. Please try again.");
         return;
       }
 
       // Redirect to dashboard on success
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       setError("Something went wrong. Please try again.");
     } finally {

@@ -1,7 +1,10 @@
 "use client";
 import { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,22 +21,18 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Replace with your actual API endpoint
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Invalid email or password.");
+      if (authError) {
+        setError(authError.message || "Invalid email or password.");
         return;
       }
 
       // Redirect to dashboard on success
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       setError("Something went wrong. Please try again.");
     } finally {
