@@ -1,6 +1,17 @@
 'use client';
 import { useState, useCallback, useRef } from 'react';
 
+const LANG_MAP = {
+  "English": "en-IN",
+  "Hindi": "hi-IN",
+  "Marathi": "mr-IN",
+  "Bengali": "bn-IN",
+  "Tamil": "ta-IN",
+  "Telugu": "te-IN",
+  "Kannada": "kn-IN",
+  "Gujarati": "gu-IN"
+};
+
 export const useSpeech = () => {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
@@ -13,20 +24,17 @@ export const useSpeech = () => {
     window.speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
+    const langCode = LANG_MAP[language] || "en-IN";
+    utterance.lang = langCode;
+
+    // Find and set a voice that matches the language
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang.startsWith(langCode)) || 
+                  voices.find(v => v.lang.startsWith('en'));
+    if (voice) {
+        utterance.voice = voice;
+    }
     
-    // Map language names to BCP 47 tags
-    const langMap = {
-      "English": "en-IN",
-      "Hindi": "hi-IN",
-      "Marathi": "mr-IN",
-      "Bengali": "bn-IN",
-      "Tamil": "ta-IN",
-      "Telugu": "te-IN",
-      "Kannada": "kn-IN",
-      "Gujarati": "gu-IN"
-    };
-    
-    utterance.lang = langMap[language] || "en-IN";
     window.speechSynthesis.speak(utterance);
   }, []);
 
@@ -51,12 +59,7 @@ export const useSpeech = () => {
     recognition.interimResults = false;
     
     // Set recognition language based on preference
-    const langMap = {
-      "English": "en-IN",
-      "Hindi": "hi-IN",
-      "Marathi": "mr-IN"
-    };
-    recognition.lang = langMap[language] || "en-IN";
+    recognition.lang = LANG_MAP[language] || "en-IN";
     
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);

@@ -15,7 +15,7 @@ export default function ChatAssistant() {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
 
   useEffect(() => {
@@ -149,8 +149,8 @@ export default function ChatAssistant() {
 
   return (
     <div className="flex flex-col h-[600px] bg-white rounded-xl shadow-xl border overflow-hidden">
-      <main className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-        {messages.map((msg, i) => (
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 h-full">
+        {messages.filter(msg => msg).map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${
               msg.role === 'user' 
@@ -169,7 +169,7 @@ export default function ChatAssistant() {
           </div>
         )}
         <div ref={messagesEndRef} />
-      </main>
+      </div>
 
       {/* Suggestions / Buttons */}
       {!loading && missingField === 'sector' && (

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabaseClient'
 import ChatAssistant from './ChatAssistant'
+import RecommendedSchemesButton from '../../components/dashboard/RecommendedSchemesButton'
 
 export default function Dashboard() {
   const [name, setName] = useState('')
@@ -47,6 +48,7 @@ export default function Dashboard() {
 
       <div className="lg:col-span-2">
         <ChatAssistant />
+        <RecommendedSchemesButton />
       </div>
     </div>
   )
