@@ -6,9 +6,7 @@ import Button from "../ui/Button";
 const NAV_LINKS = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Sectors", href: "#sectors" },
-  { label: "About Us", href: "#about" },
-  { label: "Resources", href: "#trust" },
-  { label: "Contact", href: "#contact" },
+  { label: "Why OneTapGOV", href: "#why-onetapgov" },
 ];
 
 export default function Navbar() {
