@@ -62,6 +62,21 @@ export default function SignupPage() {
         return;
       }
 
+      // Explicitly insert into profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          { 
+            id: data.user.id, 
+            full_name: form.full_name, 
+            email: form.email 
+          }
+        ]);
+
+      if (profileError) {
+        console.error("Profile creation failed", profileError);
+      }
+
       // Redirect to dashboard on success
       router.push("/dashboard");
     } catch (err) {
