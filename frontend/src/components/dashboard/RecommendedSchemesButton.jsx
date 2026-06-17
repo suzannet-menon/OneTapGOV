@@ -5,6 +5,17 @@ import { supabase } from '../../lib/supabaseClient';
 export default function RecommendedSchemesButton() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [docChecklist, setDocChecklist] = useState({});
+
+  const toggleDocument = (schemeCode, docName) => {
+    setDocChecklist(prev => ({
+        ...prev,
+        [schemeCode]: {
+            ...prev[schemeCode],
+            [docName]: !prev[schemeCode]?.[docName]
+        }
+    }));
+  };
 
   const fetchRecommendedSchemes = async () => {
     setLoading(true);
@@ -82,6 +93,37 @@ export default function RecommendedSchemesButton() {
                       <ul className="text-sm list-disc list-inside">
                         {scheme.eligibility_details.failed_conditions.map((c, j) => <li key={j}>{c}</li>)}
                       </ul>
+                    </div>
+                  )}
+                  {scheme.documents && (
+                    <div className="mt-4 border-t pt-4">
+                      <p className="font-semibold text-sm mb-2">Document Checklist:</p>
+                      {scheme.documents.map(doc => (
+                        <div key={doc} className="flex items-center gap-2 mb-1">
+                          <input 
+                            type="checkbox" 
+                            checked={docChecklist[scheme.scheme_code]?.[doc] || false}
+                            onChange={() => toggleDocument(scheme.scheme_code, doc)}
+                          />
+                          <span className="text-sm">{doc}</span>
+                        </div>
+                      ))}
+                      
+                      {(() => {
+                          const required = scheme.documents;
+                          const held = required.filter(doc => docChecklist[scheme.scheme_code]?.[doc]);
+                          const percentage = Math.round((held.length / required.length) * 100);
+                          const missing = required.filter(doc => !docChecklist[scheme.scheme_code]?.[doc]);
+
+                          return (
+                              <div className="mt-3 p-2 bg-blue-50 rounded text-sm">
+                                  <p className="font-bold">Readiness Score: {percentage}%</p>
+                                  {missing.length > 0 && (
+                                      <p className="text-red-600">Pending: {missing.join(', ')}</p>
+                                  )}
+                              </div>
+                          );
+                      })()}
                     </div>
                   )}
                 </div>

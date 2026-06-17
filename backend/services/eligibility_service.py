@@ -114,17 +114,20 @@ class EligibilityService:
         return eligible_schemes
 
     @staticmethod
-    def calculate_readiness(scheme_documents: List[str], user_documents: List[str]) -> Dict[str, Any]:
-        if not scheme_documents:
-            return {"percentage": 100, "missing": []}
+    def calculate_readiness(required_documents: List[str], held_documents: List[str]) -> Dict[str, Any]:
+        if not required_documents:
+            return {"percentage": 100, "held_count": 0, "total_count": 0, "missing": []}
             
-        held = [doc for doc in scheme_documents if doc in user_documents]
-        missing = [doc for doc in scheme_documents if doc not in user_documents]
+        # Ensure distinct comparison
+        held = [doc for doc in required_documents if doc in held_documents]
+        missing = [doc for doc in required_documents if doc not in held_documents]
         
-        percentage = int((len(held) / len(scheme_documents)) * 100)
+        total = len(required_documents)
+        percentage = int((len(held) / total) * 100)
+        
         return {
             "percentage": percentage,
             "held_count": len(held),
-            "total_count": len(scheme_documents),
+            "total_count": total,
             "missing": missing
         }

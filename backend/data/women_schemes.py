@@ -17,8 +17,10 @@ women_schemes = [
         ],
 
         "documents": [
-            "Aadhaar Card",
-            "Birth Certificate",
+            "Guardian's identity proof( Aadhaar Card, PAN Card, Passport, Voter ID, Driving licence)",
+            "Child's Birth Certificate",
+            "Filled Sukanya Samriddhi Account Opening form",
+            "Guardian's address proof(Aadhaar Card, Passport, Utility bill, Bank statement)"
         ],
     },
 
@@ -48,8 +50,11 @@ women_schemes = [
 
         "documents": [
             "Aadhaar Card",
+            "KYC application form"
             "Ration Card",
             "Bank Passbook",
+            "Deprivation Declaration",
+            "Aadhaar copies of all family members listed in the family document"
         ],
     },
 
@@ -78,9 +83,13 @@ women_schemes = [
         ],
 
         "documents": [
+            "Filled application form"
             "Aadhaar Card",
             "Employment Proof",
             "Bank Passbook",
+            "Income certificate",
+            "Educational or training institution proof",
+            "Self declaration rergarding marital status"
         ],
     },
 
@@ -101,6 +110,7 @@ women_schemes = [
         ],
 
         "documents": [
+            "Filled account Opening Form"
             "Aadhaar Card",
             "PAN Card",
             "Bank Passbook",
@@ -127,6 +137,7 @@ women_schemes = [
             "Birth Certificate",
             "Aadhaar Card",
             "Bank Passbook",
+            "Address proof or guardian"
         ],
     },
 
