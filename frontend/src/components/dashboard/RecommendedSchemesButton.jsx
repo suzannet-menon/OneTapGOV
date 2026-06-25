@@ -24,7 +24,7 @@ export default function RecommendedSchemesButton() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("No session found");
 
-      const res = await fetch('/api/backend/schemes/eligible', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/schemes/eligible`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${session.access_token}`

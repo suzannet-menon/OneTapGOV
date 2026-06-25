@@ -25,7 +25,7 @@ export default function ChatAssistant() {
   const fetchInitialQuestion = useCallback(async (token) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/backend/chat', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,8 @@ export default function ChatAssistant() {
     setMissingField(null); // Clear buttons while loading
 
     try {
-      const res = await fetch('/api/backend/chat', {
+      console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
