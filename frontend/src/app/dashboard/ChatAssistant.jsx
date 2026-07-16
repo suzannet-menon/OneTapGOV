@@ -24,8 +24,18 @@ export default function ChatAssistant() {
 
   const fetchInitialQuestion = useCallback(async (token) => {
     setLoading(true);
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const finalUrl = backendUrl ? `${backendUrl}/chat` : '/chat';
+    
+    console.log("fetchInitialQuestion - Backend URL:", backendUrl);
+    console.log("fetchInitialQuestion - Final request URL:", finalUrl);
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat`, {
+      if (!backendUrl) {
+        console.warn("fetchInitialQuestion: NEXT_PUBLIC_BACKEND_URL is undefined or empty.");
+      }
+
+      const res = await fetch(finalUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,14 +43,28 @@ export default function ChatAssistant() {
         },
         body: JSON.stringify({})
       });
-      const data = await res.json();
-      if (data.question) {
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`HTTP error! status: ${res.status}, response: ${errorText}`);
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error(`Invalid JSON response: ${jsonErr.message}`);
+      }
+
+      if (data && data.question) {
         setMessages([{ role: 'assistant', content: data.question }]);
         setMissingField(data.missing_field);
         speak(data.question, userLanguage);
       }
     } catch (error) {
-      console.error("Failed to fetch initial question", error);
+      console.error("fetchInitialQuestion - Fetch error:", error);
+      // Gracefully handle backend offline or failure by setting a message in the chat
+      setMessages([{ role: 'assistant', content: "Sorry, I'm having trouble connecting to the server. Please ensure the backend is running." }]);
     } finally {
       setLoading(false);
     }
@@ -100,8 +124,16 @@ export default function ChatAssistant() {
     setMissingField(null);
 
     try {
-      console.log("Backend URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const finalUrl = backendUrl ? `${backendUrl}/chat` : '/chat';
+      console.log("sendMessage - Backend URL:", backendUrl);
+      console.log("sendMessage - Final request URL:", finalUrl);
+
+      if (!backendUrl) {
+        console.warn("sendMessage: NEXT_PUBLIC_BACKEND_URL is undefined or empty.");
+      }
+
+      const res = await fetch(finalUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,9 +148,14 @@ export default function ChatAssistant() {
         throw new Error(`Server error: ${res.status}`);
       }
       
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error(`Invalid JSON response: ${jsonErr.message}`);
+      }
       
-      if (data.question) {
+      if (data && data.question) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.question }]);
         setMissingField(data.missing_field);
         
@@ -131,8 +168,8 @@ export default function ChatAssistant() {
         speak(data.question, currentLang);
       }
     } catch (error) {
-      console.error("Detailed Fetch Error:", error);
-      setMessages(prev => [...prev, { role: 'assistant', content: `Sorry, I'm having trouble connecting to the server.` }]);
+      console.error("sendMessage - Fetch error:", error);
+      setMessages(prev => [...prev, { role: 'assistant', content: `Sorry, I'm having trouble connecting to the server. Please ensure the backend is running.` }]);
     } finally {
       setLoading(false);
     }
