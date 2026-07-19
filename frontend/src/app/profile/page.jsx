@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { SECTORS } from "../../lib/constants/schemes";
 
+// Full language names — must match what the backend expects.
+// chat.py defaults to language = profile.get("preferred_language", "English")
+// tts.py's LANG_TO_SARVAM only recognizes these full names (case-insensitive),
+// not short codes like "en"/"hi", so this list has to stay in sync with that map.
 const LANGUAGE_OPTIONS = [
   "English",
   "Hindi",
@@ -34,23 +38,38 @@ export default function ProfilePage() {
           return;
         }
 
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('full_name,phone_number,sector,preferred_language')
-          .eq('id', user.id)
-          .single();
+        // Two tables can hold this data: "profiles" (this page, legacy) and
+        // "user_basic_info" (what chat.py / eligibility_service actually
+        // read from for recommendations). We read both and let
+        // user_basic_info win on conflicts, since that's the table that
+        // matters for scheme matching — otherwise this page can show/save
+        // values the recommendation engine never sees.
+        const [{ data: profile, error: profileError }, { data: basicInfo, error: basicInfoError }] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('full_name,phone_number,sector,preferred_language')
+            .eq('id', user.id)
+            .single(),
+          supabase
+            .from('user_basic_info')
+            .select('full_name,phone_number,sector,preferred_language')
+            .eq('user_id', user.id)
+            .single(),
+        ]);
 
-        if (error) {
-          console.warn('Profile read error:', error.message);
-        }
+        if (profileError) console.warn('profiles read error:', profileError.message);
+        if (basicInfoError) console.warn('user_basic_info read error:', basicInfoError.message);
 
-        const rawLang = profile?.preferred_language || user.user_metadata?.preferred_language;
+        // Normalize whatever is stored (old rows may still have short codes
+        // like "en" from before this was a dropdown) to a full language name
+        // so the select always shows something valid instead of blank/"en".
+        const rawLang = basicInfo?.preferred_language || profile?.preferred_language || user.user_metadata?.preferred_language;
         const normalizedLang = normalizeLanguage(rawLang);
 
         setForm({
-          full_name: profile?.full_name || user.user_metadata?.full_name || '',
-          phone_number: profile?.phone_number || user.user_metadata?.phone_number || '',
-          sector: profile?.sector || '',
+          full_name: basicInfo?.full_name || profile?.full_name || user.user_metadata?.full_name || '',
+          phone_number: basicInfo?.phone_number || profile?.phone_number || user.user_metadata?.phone_number || '',
+          sector: basicInfo?.sector || profile?.sector || '',
           preferred_language: normalizedLang,
         });
       } catch (e) {
@@ -62,6 +81,8 @@ export default function ProfilePage() {
     load();
   }, [router]);
 
+  // Maps legacy short codes (en, hi, mr, ...) or any-case full names to the
+  // canonical full name used in LANGUAGE_OPTIONS. Falls back to "English".
   const normalizeLanguage = (value) => {
     if (!value) return "English";
     const CODE_MAP = {
@@ -85,25 +106,33 @@ export default function ProfilePage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user');
 
-      // Save display info to profiles table
-      const { error: profileErr } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          full_name: form.full_name,
-          phone_number: form.phone_number,
-        }, { returning: 'minimal' });
-      if (profileErr) throw profileErr;
+      const profilesUpsert = {
+        id: user.id,
+        full_name: form.full_name,
+        phone_number: form.phone_number,
+        sector: form.sector,
+        preferred_language: form.preferred_language,
+      };
 
-      // Save sector & language to user_basic_info table
-      const { error: basicErr } = await supabase
-        .from('user_basic_info')
-        .upsert({
-          user_id: user.id,
-          sector: form.sector,
-          preferred_language: form.preferred_language,
-        }, { returning: 'minimal' });
-      if (basicErr) throw basicErr;
+      // user_basic_info is what chat.py and eligibility_service.py actually
+      // read from — without writing here too, saving on this page would
+      // never affect scheme recommendations or the chat assistant's view
+      // of the profile.
+      const basicInfoUpsert = {
+        user_id: user.id,
+        full_name: form.full_name,
+        phone_number: form.phone_number,
+        sector: form.sector,
+        preferred_language: form.preferred_language,
+      };
+
+      const [{ error: profilesError }, { error: basicInfoError }] = await Promise.all([
+        supabase.from('profiles').upsert(profilesUpsert, { returning: 'minimal' }),
+        supabase.from('user_basic_info').upsert(basicInfoUpsert, { returning: 'minimal' }),
+      ]);
+
+      if (profilesError) throw profilesError;
+      if (basicInfoError) throw basicInfoError;
 
       setMsg('Profile saved successfully.');
     } catch (err) {
