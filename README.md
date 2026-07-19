@@ -1,11 +1,8 @@
 # OneTapGOV → Team HackInnova
-
-## Track(Vertical AI and Create any idea
+## Built for NamasteDev Hackathon X Codex
+### Track(Vertical AI and Create any idea
 
 **AI-Powered Government Scheme Discovery & Application Assistant**
-
-
-**Built for NamasteDev Hackathon X Codex**
 
 ## Overview
 
