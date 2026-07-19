@@ -80,7 +80,7 @@ export default function SignupPage() {
       // Redirect to dashboard on success
       router.push("/dashboard");
     } catch (err) {
-      setError(err?.message || "Something went wrong. Please try again.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

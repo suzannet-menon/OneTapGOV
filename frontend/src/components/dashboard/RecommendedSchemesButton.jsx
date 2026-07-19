@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 
 export default function RecommendedSchemesButton() {
@@ -20,13 +20,6 @@ export default function RecommendedSchemesButton() {
   const fetchRecommendedSchemes = async () => {
     setLoading(true);
     setResults(null);
-
-    if (!profileComplete) {
-      setResults({ status: 'incomplete', message: 'Please complete your profile before checking recommendations.' });
-      setLoading(false);
-      return;
-    }
-
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("No session found");
@@ -147,4 +140,3 @@ export default function RecommendedSchemesButton() {
     </div>
   );
 }
-
