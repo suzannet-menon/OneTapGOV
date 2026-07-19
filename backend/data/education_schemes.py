@@ -24,6 +24,7 @@ education_schemes = [
             "Previous Marksheet",
             "Bank Passbook",
         ],
+        "official_link": "https://scholarships.gov.in",
     },
     {
         "scheme_name": "AICTE Pragati Scholarship",
@@ -56,6 +57,7 @@ education_schemes = [
             "Fee Receipt",
             "Bank Passbook",
         ],
+        "official_link": "https://scholarships.gov.in",
     },
     {
         "scheme_name": "Central Sector Scholarship",
@@ -81,6 +83,7 @@ education_schemes = [
             "Bonafide Certificate",
             "Bank Passbook",
         ],
+        "official_link": "https://scholarships.gov.in",
     },
     {
         "scheme_name": "INSPIRE Scholarship",
@@ -105,6 +108,7 @@ education_schemes = [
             "Previous Marksheet",
             "Admission Letter",
         ],
+        "official_link": "https://online-inspire.gov.in",
     },
     {
         "scheme_name": "NSP Merit Scholarship",
@@ -129,5 +133,155 @@ education_schemes = [
             "Income Certificate",
             "Previous Marksheet",
         ],
+        "official_link": "https://scholarships.gov.in",
+    },
+    {
+        "scheme_name": "National Means-cum-Merit Scholarship (NMMS)",
+        "scheme_code": "EDU006",
+        "category": "Education",
+        "conditions": [
+            {
+                "field_name": "is_student",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be a student in Class 9 to 12 at a government, government-aided, or local body school",
+            },
+            {
+                "field_name": "annual_income",
+                "comparison_operator": "<=",
+                "comparison_value": "350000",
+                "human_readable_condition": "Annual family income should not exceed ₹3.5 lakh",
+            },
+            {
+                "field_name": "percentage",
+                "comparison_operator": ">=",
+                "comparison_value": "55",
+                "human_readable_condition": "Student must have scored at least 55% in the qualifying class (relaxed to 50% for SC/ST students)",
+            },
+        ],
+        "documents": [
+            "Aadhaar Card",
+            "Income Certificate",
+            "Previous Class Marksheet",
+            "Bonafide Certificate",
+            "Bank Passbook",
+            "Caste Certificate (if applicable)",
+        ],
+        "official_link": "https://scholarships.gov.in",
+    },
+    {
+        "scheme_name": "PM YASASVI Scholarship",
+        "scheme_code": "EDU007",
+        "category": "Education",
+        "conditions": [
+            {
+                "field_name": "is_student",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be a student belonging to OBC, EBC, or DNT category",
+            },
+            {
+                "field_name": "annual_income",
+                "comparison_operator": "<=",
+                "comparison_value": "250000",
+                "human_readable_condition": "Annual family income should not exceed ₹2.5 lakh",
+            },
+        ],
+        "documents": [
+            "Aadhaar Card",
+            "Income Certificate",
+            "Caste/Category Certificate",
+            "Previous Marksheet",
+            "Bank Passbook",
+        ],
+        "official_link": "https://scholarships.gov.in",
+    },
+    {
+        "scheme_name": "Merit-cum-Means Scholarship for Minorities",
+        "scheme_code": "EDU008",
+        "category": "Education",
+        "conditions": [
+            {
+                "field_name": "is_student",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be a student pursuing a professional or technical course",
+            },
+            {
+                "field_name": "is_minority",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must belong to a notified minority community",
+            },
+            {
+                "field_name": "annual_income",
+                "comparison_operator": "<=",
+                "comparison_value": "200000",
+                "human_readable_condition": "Annual family income should not exceed ₹2 lakh",
+            },
+        ],
+        "documents": [
+            "Aadhaar Card",
+            "Income Certificate",
+            "Minority Community Certificate",
+            "Admission Letter",
+            "Fee Receipt",
+            "Bank Passbook",
+        ],
+        "official_link": "https://scholarships.gov.in",
+    },
+    {
+        "scheme_name": "National Fellowship for Higher Education of ST Students",
+        "scheme_code": "EDU009",
+        "category": "Education",
+        "conditions": [
+            {
+                "field_name": "is_student",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be pursuing M.Phil or Ph.D",
+            },
+            {
+                "field_name": "is_st",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must belong to a Scheduled Tribe",
+            },
+        ],
+        "documents": [
+            "Aadhaar Card",
+            "ST Caste Certificate",
+            "Admission Letter",
+            "Previous Marksheet",
+            "Bank Passbook",
+        ],
+        "official_link": "https://scholarships.gov.in",
+    },
+    {
+        "scheme_name": "Prime Minister's Scholarship Scheme for Wards of Ex-Servicemen",
+        "scheme_code": "EDU010",
+        "category": "Education",
+        "conditions": [
+            {
+                "field_name": "is_student",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be a student pursuing a professional degree course",
+            },
+            {
+                "field_name": "parent_ex_serviceman",
+                "comparison_operator": "==",
+                "comparison_value": "true",
+                "human_readable_condition": "Applicant must be a dependent of an ex-serviceman or ex-coast guard personnel",
+            },
+        ],
+        "documents": [
+            "Aadhaar Card",
+            "Ex-Servicemen Discharge Certificate",
+            "Admission Letter",
+            "Previous Marksheet",
+            "Bank Passbook",
+        ],
+        "official_link": "https://ksb.gov.in",
     },
 ]
